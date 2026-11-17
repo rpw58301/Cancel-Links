@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cancel Links | No more hoops. Just direct cancel links.</title>
+    <title>Cancel Links | No more hoops. Step-by-step instructions to cancel without the hassle.</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -23,225 +23,100 @@
         }
     </script>
 </head>
-<body class="bg-darkBg text-gray-100 min-h-screen font-sans antialiased selection:bg-neonRed selection:text-white">
+<body class="bg-darkBg text-gray-100 min-h-screen flex flex-col font-sans antialiased selection:bg-neonRed selection:text-white">
 
-    <!-- Top Navigation -->
-    <header class="border-b border-gray-800/60 sticky top-0 bg-darkBg/90 backdrop-blur-md z-50">
-        <div class="max-width max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-            <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 rounded-xl bg-neonRed/10 border border-neonRed/30 flex items-center justify-center text-neonRed font-bold text-xl shadow-lg shadow-neonRed/10">
+    <!-- Top Navigation (Logo Only - Removed Home, About, and Direct Cancel buttons) -->
+    <header class="border-b border-gray-800/60 sticky top-0 bg-darkBg/90 backdrop-blur-md z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <button onclick="showHomeView()" class="flex items-center space-x-3 text-left focus:outline-none group">
+                <div class="w-10 h-10 rounded-xl bg-neonRed/10 border border-neonRed/30 flex items-center justify-center text-neonRed font-bold text-xl shadow-lg shadow-neonRed/10 group-hover:bg-neonRed/20 transition-all">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
                 </div>
                 <span class="text-xl font-extrabold tracking-tight text-white">Cancel<span class="text-neonRed">Links</span></span>
-            </div>
-            <nav class="hidden md:flex items-center space-x-8 text-sm font-medium text-gray-300">
-                <a href="#" class="text-white hover:text-neonRed transition-colors">Home</a>
-                <a href="#about" class="hover:text-neonRed transition-colors">About</a>
-            </nav>
-            <div>
-                <a href="#directory" class="bg-neonRed hover:bg-neonRedHover text-white px-5 py-2.5 rounded-xl font-semibold text-sm transition-all shadow-lg shadow-neonRed/20">
-                    Direct Cancel
-                </a>
-            </div>
+            </button>
         </div>
     </header>
 
-    <!-- Hero Section -->
-    <section class="pt-16 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center">
-        <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight text-white mb-4">
-            No more hoops.<br>
-            <span class="text-gray-100">One click to <span class="text-neonRed">unsubscribe</span>.</span>
-        </h1>
-        <p class="text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto mb-10">
-            Skip the retention traps, hidden menus, and phone calls. Access direct cancellation paths instantly.
-        </p>
+    <!-- ================= HOME DIRECTORY VIEW ================= -->
+    <div id="homeView" class="flex-grow">
+        <!-- Hero Section -->
+        <section class="pt-14 pb-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center">
+            <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white mb-5 leading-tight">
+                No more hoops.<br>
+                <span class="text-gray-100">Step-by-step instructions to <span class="text-neonRed">cancel without the hassle</span>.</span>
+            </h1>
+            <p class="text-lg sm:text-xl text-gray-400 max-w-3xl mx-auto mb-10">
+                Skip the retention traps, hidden menus, and phone calls. Access direct cancellation path instructions instantly.
+            </p>
 
-        <!-- Search Bar -->
-        <div class="max-w-3xl mx-auto relative" id="directory">
-            <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-gray-400">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            <!-- Search Bar -->
+            <div class="max-w-3xl mx-auto relative mb-8" id="directory">
+                <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-gray-400">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                </div>
+                <input 
+                    type="text" 
+                    id="searchInput"
+                    placeholder="Search 70+ subscriptions (e.g., Netflix, Planet Fitness, Adobe, Tinder)..." 
+                    class="w-full pl-14 pr-32 py-4 bg-cardBg border border-gray-800 rounded-2xl text-white placeholder-gray-500 focus:outline-none focus:border-neonRed focus:ring-1 focus:ring-neonRed shadow-2xl text-base transition-all"
+                >
+                <div class="absolute inset-y-2 right-2 flex items-center">
+                    <span id="serviceCountBadge" class="bg-gray-800 text-gray-400 text-xs font-semibold px-3 py-1.5 rounded-xl border border-gray-700">100% Free</span>
+                </div>
             </div>
-            <input 
-                type="text" 
-                id="searchInput"
-                placeholder="Search for a subscription (e.g., Netflix, Planet Fitness, Spotify)..." 
-                class="w-full pl-14 pr-32 py-4 bg-cardBg border border-gray-800 rounded-2xl text-white placeholder-gray-500 focus:outline-none focus:border-neonRed focus:ring-1 focus:ring-neonRed shadow-2xl text-base transition-all"
-            >
-            <div class="absolute inset-y-2 right-2 flex items-center">
-                <span class="bg-gray-800 text-gray-400 text-xs font-semibold px-3 py-1.5 rounded-xl border border-gray-700">100% Free</span>
+
+            <!-- Category Quick Filters -->
+            <div id="categoryFilters" class="flex flex-wrap items-center justify-center gap-2 max-w-4xl mx-auto">
+                <!-- Injected via JS -->
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Directory Grid Section -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
-        <div id="noResults" class="hidden text-center py-16">
-            <p class="text-gray-400 text-lg">No direct links found matching your search. Try searching for another service.</p>
-        </div>
-
-        <div id="companyGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            <!-- Dynamic Cards Injected via JavaScript -->
-        </div>
-    </main>
-
-    <!-- Footer -->
-    <footer id="about" class="border-t border-gray-800/60 bg-darkBg py-12 px-4 sm:px-6 lg:px-8 text-center text-gray-500 text-sm">
-        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p>&copy; 2026 CancelLinks.com. Free tool, no account required.</p>
-            <div class="flex space-x-6">
-                <a href="#" class="hover:text-gray-300 transition-colors">Privacy</a>
-                <a href="#" class="hover:text-gray-300 transition-colors">Terms</a>
-                <a href="#" class="hover:text-gray-300 transition-colors">Contact</a>
+        <!-- Directory Grid Section -->
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
+            <div id="noResults" class="hidden text-center py-16 bg-cardBg/50 rounded-2xl border border-gray-800/60 max-w-xl mx-auto p-8">
+                <p class="text-gray-300 text-lg font-semibold mb-2">No matching services found</p>
+                <p class="text-gray-500 text-sm mb-6">Try searching a different keyword or request a new cancellation guide below.</p>
+                <button onclick="openIssueModal('Missing Service Request')" class="bg-gray-800 hover:bg-gray-700 text-white px-5 py-2.5 rounded-xl text-xs font-bold border border-gray-700 transition-all">
+                    + Request This Service
+                </button>
             </div>
-        </div>
-    </footer>
 
-    <!-- Toast Notification Modal -->
-    <div id="toast" class="fixed bottom-6 right-6 transform translate-y-32 opacity-0 transition-all duration-300 z-50 bg-cardBg border border-gray-700 shadow-2xl rounded-2xl p-4 flex items-center space-x-3 max-w-sm">
-        <div class="w-8 h-8 rounded-xl bg-neonRed/20 text-neonRed flex items-center justify-center shrink-0">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
-        </div>
-        <div>
-            <h4 class="text-sm font-bold text-white" id="toastTitle">Opening Link</h4>
-            <p class="text-xs text-gray-400" id="toastDesc">Redirecting you directly to cancellation page...</p>
-        </div>
+            <div id="companyGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                <!-- Dynamic Cards Injected via JavaScript -->
+            </div>
+        </main>
     </div>
 
-    <!-- Application Script -->
-    <script>
-        const companies = [
-            { name: "Planet Fitness", url: "https://www.planetfitness.com/my-account" },
-            { name: "LA Fitness", url: "https://www.lafitness.com/Pages/Login.aspx" },
-            { name: "Equinox", url: "https://www.equinox.com/login" },
-            { name: "24 Hour Fitness", url: "https://www.24hourfitness.com/members/billing" },
-            { name: "Anytime Fitness", url: "https://www.anytimefitness.com/login" },
-            { name: "Crunch Fitness", url: "https://www.crunch.com/login" },
-            { name: "Gold's Gym", url: "https://goldsgym.com/member-login" },
-            { name: "Orangetheory", url: "https://www.orangetheory.com/en-us/member-login" },
-            { name: "Snap Fitness", url: "https://www.snapfitness.com/us/member-login" },
-            { name: "Software & Security", url: "https://account.adobe.com/plans" },
-            { name: "McAfee", url: "https://myaccount.mcafee.com/plans" },
-            { name: "Norton", url: "https://my.norton.com/extspa/account/subscriptions" },
-            { name: "Microsoft 365", url: "https://account.microsoft.com/services" },
-            { name: "Dropbox", url: "https://www.dropbox.com/account/plan" },
-            { name: "Evernote", url: "https://www.evernote.com/Billing.action" },
-            { name: "LinkedIn Premium", url: "https://my.nordaccount.com/dashboard" },
-            { name: "Grammarly", url: "https://account.grammarly.com/settings/plans" },
-            { name: "Zoom", url: "https://zoom.us/billing" },
-            { name: "Squarespace", url: "https://account.squarespace.com" },
-            { name: "Wix", url: "https://manage.wix.com/billing/subscriptions" },
-            { name: "ExpressVPN", url: "https://www.expressvpn.com/sign-in" },
-            { name: "LastPass", url: "https://lastpass.com/my.php" },
-            { name: "NordVPN", url: "https://my.nordaccount.com/" },
-            { name: "Chegg", url: "https://www.chegg.com/my-account" },
-            { name: "Meal Kits & Delivery", url: "https://HelloFresh.com" },
-            { name: "Blue Apron", url: "https://www.blueapron.com/plans" },
-            { name: "Factor", url: "https://www.factor75.com/settings/plan" },
-            { name: "EveryPlate", url: "https://www.everyplate.com/settings/plan" },
-            { name: "Home Chef", url: "https://www.homechef.com/settings" },
-            { name: "Green Chef", url: "https://www.greenchef.com/settings/plan" },
-            { name: "Sunbasket", url: "https://sunbasket.com/account" },
-            { name: "Nutrisystem", url: "https://www.nutrisystem.com/login" },
-            { name: "Uber One", url: "https://auth.uber.com/login" },
-            { name: "DoorDash DashPass", url: "https://www.doordash.com/consumer/edit_profile" },
-            { name: "Grubhub+", url: "https://www.grubhub.com/account/billing-plus" },
-            { name: "Entertainment & Streaming", url: "https://secure.hulu.com/account" },
-            { name: "Max (HBO)", url: "https://auth.max.com/login" },
-            { name: "Disney+", url: "https://www.disneyplus.com/account" },
-            { name: "Paramount+", url: "https://www.paramountplus.com/account" },
-            { name: "Peacock", url: "https://www.peacocktv.com/account/overview" },
-            { name: "Apple TV+", url: "https://tv.apple.com/settings" },
-            { name: "Amazon Prime", url: "https://www.amazon.com/mc" },
-            { name: "Sling TV", url: "https://www.sling.com/account/membership" },
-            { name: "FuboTV", url: "https://fubotv.com/account" },
-            { name: "Crunchyroll", url: "https://www.crunchyroll.com/account/membership" },
-            { name: "Starz", url: "https://www.starz.com/starz.com/login" },
-            { name: "Showtime", url: "https://www.showtime.com/#/account" },
-            { name: "AMC+", url: "https://www.amcplus.com/account" },
-            { name: "Audio & Reading", url: "https://myaccount.nytimes.com/", name: "The New York Times" },
-            { name: "Wall Street Journal", url: "https://customercenter.wsj.com/dashboard" },
-            { name: "Washington Post", url: "https://subscribe.washingtonpost.com" },
-            { name: "The Economist", url: "https://myaccount.economist.com/" },
-            { name: "Medium", url: "https://medium.com/me/settings" },
-            { name: "Audible", url: "https://www.audible.com/account/settings" },
-            { name: "SiriusXM", url: "https://care.siriusxm.com" },
-            { name: "Spotify Premium", url: "https://www.spotify.com/us/account/overview/" },
-            { name: "Apple Music", url: "https://music.apple.com/account/settings" },
-            { name: "Pandora", url: "https://www.pandora.com/settings/subscription" },
-            { name: "Dating Apps", url: "https://tinder.com/app/settings" },
-            { name: "Bumble", url: "https://bumble.com/app/profile/settings" },
-            { name: "Hinge", url: "https://hinge.co/settings" },
-            { name: "Match.com", url: "https://www.match.com/settings" },
-            { name: "eHarmony", url: "https://www.eharmony.com/login" },
-            { name: "OKCupid", url: "https://www.okcupid.com/billing" },
-            { name: "Plenty of Fish", url: "https://www.pof.com/manageaccount" },
-            { name: "Grindr", url: "https://help.grindr.com/hc/en-requests/new" },
-            { name: "Subscription Boxes", url: "https://www.fabfitfun.com/edit-account" },
-            { name: "BarkBox", url: "https://www.barkbox.com/account/manage" },
-            { name: "Ipsy", url: "https://www.ipsy.com/account/manage" },
-            { name: "Dollar Shave Club", url: "https://www.dollarshaveclub.com/my-account/member" },
-            { name: "Harrys", url: "https://www.harrys.com/en/us/account" },
-            { name: "Stitch Fix", url: "https://www.stitchfix.com/settings" }
-        ];
+    <!-- ================= DEDICATED SERVICE INSTRUCTION PAGE VIEW ================= -->
+    <div id="detailView" class="hidden flex-grow max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <!-- Back Navigation Button -->
+        <button onclick="showHomeView()" class="inline-flex items-center space-x-2 text-sm font-semibold text-gray-400 hover:text-white mb-8 group transition-colors">
+            <div class="w-8 h-8 rounded-lg bg-cardBg border border-gray-800 flex items-center justify-center group-hover:border-neonRed transition-colors">
+                <svg class="w-4 h-4 text-gray-300 group-hover:text-neonRed" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path></svg>
+            </div>
+            <span>Back to All Subscriptions</span>
+        </button>
 
-        const grid = document.getElementById('companyGrid');
-        const searchInput = document.getElementById('searchInput');
-        const noResults = document.getElementById('noResults');
-        const toast = document.getElementById('toast');
-        const toastTitle = document.getElementById('toastTitle');
-        const toastDesc = document.getElementById('toastDesc');
-
-        function renderCards(items) {
-            grid.innerHTML = '';
-            if (items.length === 0) {
-                noResults.classList.remove('hidden');
-                return;
-            }
-            noResults.classList.add('hidden');
-
-            items.forEach(company => {
-                const card = document.createElement('div');
-                card.className = 'bg-cardBg border border-gray-800/80 hover:border-gray-700 rounded-2xl p-5 flex items-center justify-between transition-all shadow-lg group';
-                card.innerHTML = `
-                    <div class="flex items-center space-x-4">
-                        <div class="w-10 h-10 rounded-xl bg-gray-800/80 border border-gray-700/60 flex items-center justify-center text-gray-300 font-bold text-sm group-hover:border-neonRed/40 transition-colors">
-                            ${company.name.charAt(0)}
-                        </div>
-                        <div>
-                            <h3 class="font-semibold text-white text-base">${company.name}</h3>
-                            <p class="text-xs text-gray-400">Direct cancellation link</p>
-                        </div>
+        <!-- Service Main Card -->
+        <div class="bg-cardBg border border-gray-800 rounded-3xl p-6 sm:p-10 shadow-2xl">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pb-8 border-b border-gray-800">
+                <div class="flex items-center space-x-4">
+                    <div id="detailInitial" class="w-14 h-14 rounded-2xl bg-neonRed/10 border border-neonRed/30 flex items-center justify-center text-neonRed font-extrabold text-2xl shrink-0">
+                        N
                     </div>
-                    <button onclick="triggerRedirect('${company.name}', '${company.url}')" class="bg-neonRed hover:bg-neonRedHover text-white px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-md shadow-neonRed/20 shrink-0 w-[140px] text-center">
-                        Direct Cancel
-                    </button>
-                `;
-                grid.appendChild(card);
-            });
-        }
+                    <div>
+                        <span id="detailCategory" class="text-xs font-bold uppercase tracking-wider text-neonRed bg-neonRed/10 px-2.5 py-1 rounded-md">Category</span>
+                        <h2 id="detailTitle" class="text-2xl sm:text-4xl font-extrabold text-white mt-1.5">Service Name</h2>
+                    </div>
+                </div>
 
-        function triggerRedirect(name, url) {
-            toastTitle.innerText = `Opening ${name}`;
-            toastDesc.innerText = 'Redirecting you directly to cancellation page...';
-            toast.classList.remove('translate-y-32', 'opacity-0');
-            
-            setTimeout(() => {
-                window.open(url, '_blank');
-            }, 600);
+                <!-- Primary Official Website Action Button -->
+                <a id="detailExternalBtn" href="#" target="_blank" rel="noopener noreferrer" onclick="trackExternalClick()" class="bg-neonRed hover:bg-neonRedHover text-white px-6 py-4 rounded-2xl font-bold text-sm sm:text-base transition-all shadow-lg shadow-neonRed/25 flex items-center justify-center space-x-2 shrink-0">
+                    <span id="detailBtnText">Go to Official Website</span>
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                </a>
+            </div>
 
-            setTimeout(() => {
-                toast.classList.add('translate-y-32', 'opacity-0');
-            }, 3500);
-        }
-
-        searchInput.addEventListener('input', (e) => {
-            const query = e.target.value.toLowerCase();
-            const filtered = companies.filter(c => c.name.toLowerCase().includes(query));
-            renderCards(filtered);
-        });
-
-        // Initial render
-        renderCards(companies);
-    </script>
-</body>
-</html>
+            <!-- Security & Login Expectation Banner -->
+            <div class="mt-6 bg-darkBg/70 border border-gray-800/90 rounded-2xl p-4 flex items-start space-x-3">
+                <svg class="w-5 h-5 text-neonRed shrink-0 mt-0.5" fill="none" stroke="current
