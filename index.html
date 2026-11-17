@@ -119,4 +119,549 @@
 
             <!-- Security & Login Expectation Banner -->
             <div class="mt-6 bg-darkBg/70 border border-gray-800/90 rounded-2xl p-4 flex items-start space-x-3">
-                <svg class="w-5 h-5 text-neonRed shrink-0 mt-0.5" fill="none" stroke="current
+                <svg class="w-5 h-5 text-neonRed shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <p class="text-xs sm:text-sm text-gray-300 leading-relaxed">
+                    <strong class="text-white">Quick Tip:</strong> Most services require you to sign in first for account security. Click the button above to open the official portal in a new tab, then follow the exact steps below to bypass their retention menus.
+                </p>
+            </div>
+
+            <!-- Step-by-Step Instructions List -->
+            <div class="mt-8">
+                <h3 class="text-lg font-bold text-white mb-5 flex items-center space-x-2">
+                    <span>Step-by-Step Cancellation Instructions</span>
+                </h3>
+                <div id="detailStepsList" class="space-y-4">
+                    <!-- Dynamic Steps Injected Here -->
+                </div>
+            </div>
+
+            <!-- Bottom Feedback & Issue Reporting Bar -->
+            <div class="mt-10 pt-6 border-t border-gray-800/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-400">
+                <p>Did this company change their menu or move their cancellation page?</p>
+                <button onclick="openIssueModal(currentService ? currentService.name : 'General')" class="text-gray-300 hover:text-neonRed font-semibold underline underline-offset-4 flex items-center space-x-1.5 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                    <span>Report Broken Link or Outdated Steps</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= ADMIN ANALYTICS VIEW (?admin=true) ================= -->
+    <div id="adminView" class="hidden flex-grow max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+            <div>
+                <span class="text-xs font-bold uppercase tracking-wider text-neonRed bg-neonRed/10 px-2.5 py-1 rounded-md">Admin Monitor</span>
+                <h2 class="text-3xl font-extrabold text-white mt-1">Visited Count & Click Leaderboard</h2>
+                <p class="text-sm text-gray-400 mt-1">Tracks global visitor views (via CounterAPI) and your local browser tests.</p>
+            </div>
+            <div class="flex items-center space-x-3">
+                <button onclick="refreshAdminCounts()" id="refreshAdminBtn" class="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2.5 rounded-xl text-xs font-bold border border-gray-700 transition-all">
+                    Refresh Live Counts
+                </button>
+                <button onclick="showHomeView()" class="bg-neonRed hover:bg-neonRedHover text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-all">
+                    Exit Admin
+                </button>
+            </div>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-8">
+            <div class="bg-cardBg border border-gray-800 rounded-2xl p-5">
+                <p class="text-xs text-gray-400 font-semibold uppercase">Total Services Monitored</p>
+                <p id="adminTotalServices" class="text-3xl font-extrabold text-white mt-2">73</p>
+            </div>
+            <div class="bg-cardBg border border-gray-800 rounded-2xl p-5">
+                <p class="text-xs text-gray-400 font-semibold uppercase">Total Global Guide Views</p>
+                <p id="adminTotalGlobal" class="text-3xl font-extrabold text-neonRed mt-2">Loading...</p>
+            </div>
+            <div class="bg-cardBg border border-gray-800 rounded-2xl p-5">
+                <p class="text-xs text-gray-400 font-semibold uppercase">Your Device Views (Local)</p>
+                <p id="adminTotalLocal" class="text-3xl font-extrabold text-white mt-2">0</p>
+            </div>
+        </div>
+
+        <!-- Table of Counts -->
+        <div class="bg-cardBg border border-gray-800 rounded-2xl overflow-hidden shadow-2xl">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-gray-800 text-xs font-bold text-gray-400 uppercase bg-darkBg/60">
+                            <th class="py-3.5 px-4">Rank</th>
+                            <th class="py-3.5 px-4">Service Name</th>
+                            <th class="py-3.5 px-4">Category</th>
+                            <th class="py-3.5 px-4 text-right">Global Views</th>
+                            <th class="py-3.5 px-4 text-right">My Local Clicks</th>
+                            <th class="py-3.5 px-4 text-right">Quick Test</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminTableBody" class="divide-y divide-gray-800/60 text-sm">
+                        <!-- Injected via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= REPORT AN ISSUE MODAL ================= -->
+    <div id="issueModal" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-cardBg border border-gray-700 rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xl font-extrabold text-white">Report an Issue</h3>
+                <button onclick="closeIssueModal()" class="text-gray-400 hover:text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <p class="text-xs text-gray-400 mb-5">
+                Let us know if a link is broken, if a company changed their cancellation steps, or if you want a new service added.
+            </p>
+            <form onsubmit="submitIssueForm(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase text-gray-400 mb-1">Service Name</label>
+                    <input type="text" id="issueServiceInput" required class="w-full px-4 py-2.5 bg-darkBg border border-gray-700 rounded-xl text-white text-sm focus:outline-none focus:border-neonRed">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase text-gray-400 mb-1">What happened?</label>
+                    <select id="issueTypeInput" class="w-full px-4 py-2.5 bg-darkBg border border-gray-700 rounded-xl text-white text-sm focus:outline-none focus:border-neonRed">
+                        <option value="Broken Link">The website link is broken / 404</option>
+                        <option value="Steps Changed">The company changed their cancellation steps</option>
+                        <option value="New Service Request">Please add a new subscription service</option>
+                        <option value="Other Feedback">Other feedback</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase text-gray-400 mb-1">Details (Optional)</label>
+                    <textarea id="issueNotesInput" rows="3" placeholder="Tell us what changed or paste the updated link..." class="w-full px-4 py-2.5 bg-darkBg border border-gray-700 rounded-xl text-white text-sm focus:outline-none focus:border-neonRed"></textarea>
+                </div>
+                <div class="flex items-center justify-end space-x-3 pt-2">
+                    <button type="button" onclick="closeIssueModal()" class="px-4 py-2.5 rounded-xl text-xs font-bold text-gray-400 hover:text-white">Cancel</button>
+                    <button type="submit" class="bg-neonRed hover:bg-neonRedHover text-white px-6 py-2.5 rounded-xl text-xs font-bold shadow-lg shadow-neonRed/20 transition-all">
+                        Send Report
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-800/60 bg-darkBg py-10 px-4 sm:px-6 lg:px-8 text-center text-gray-500 text-sm">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p>&copy; 2026 CancelLinks.com. Free tool, no account required.</p>
+            <div class="flex items-center space-x-6">
+                <button onclick="openIssueModal('General Feedback')" class="hover:text-gray-300 transition-colors">Report an Issue</button>
+                <button onclick="promptAdminAccess()" class="text-gray-700 hover:text-gray-400 transition-colors text-xs" title="Admin Analytics">Admin</button>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Application Script -->
+    <script>
+        // ================= CONFIGURATION =================
+        // Change this email to your own email address to receive issue reports!
+        // Optional: Or paste a free Formspree endpoint URL into FORMSPREE_ENDPOINT.
+        const OWNER_EMAIL = "support@cancellinks.com"; 
+        const FORMSPREE_ENDPOINT = ""; // e.g., "https://formspree.io/f/your_form_id"
+        const ADMIN_PIN = "1234"; // PIN required when clicking "Admin" in footer
+        const COUNTER_NAMESPACE = "cancellinks-rpw58301"; // Global CounterAPI namespace
+
+        // ================= VERIFIED 73-SERVICE DATASET =================
+        const companies = [
+            // Gyms & Fitness (9)
+            { id: "planet-fitness", name: "Planet Fitness", category: "Gyms & Fitness", url: "https://www.planetfitness.com/my-account", steps: ["Log into your Planet Fitness account on a web browser (not the mobile app).", "Click 'My Account' and select 'Membership' or 'Cancel Membership'.", "Follow the online prompts to confirm your cancellation (or generate your pre-filled cancellation form if required by your local franchise)."] },
+            { id: "la-fitness", name: "LA Fitness", category: "Gyms & Fitness", url: "https://www.lafitness.com/Pages/Login.aspx", steps: ["Log into your online member portal at LAFitness.com.", "Click 'Account Info' in the top menu, then select 'Cancel Account' (available online in select states) or 'Print Cancellation Form'.", "Submit the online cancellation or mail the barcoded form via certified mail (or hand-deliver it to a club Operations Manager)."] },
+            { id: "equinox", name: "Equinox", category: "Gyms & Fitness", url: "https://www.equinox.com/login", steps: ["Sign in to your member account on Equinox.com.", "Navigate to 'Account Settings' > 'Membership' and select 'Cancel Membership' (available once your initial 12-month commitment is complete).", "Alternatively, email cancelline@equinox.com with your full name, club location, and member ID to request cancellation."] },
+            { id: "24-hour-fitness", name: "24 Hour Fitness", category: "Gyms & Fitness", url: "https://www.24hourfitness.com/members/billing", steps: ["Log into your My24 account on 24HourFitness.com.", "Click 'My Account' > 'Membership' and select 'Cancel My Membership'.", "Confirm the cancellation reason and save your confirmation email."] },
+            { id: "anytime-fitness", name: "Anytime Fitness", category: "Gyms & Fitness", url: "https://www.anytimefitness.com/login", steps: ["Log into your Anytime Fitness member portal to check your home club contract and billing processor (typically ABC Fitness Solutions).", "Visit https://myaccount.abcfitness.com/ to manage billing or submit an online cancellation request if supported in your state.", "If your local franchise requires direct notice, email or visit your home club manager directly."] },
+            { id: "crunch-fitness", name: "Crunch Fitness", category: "Gyms & Fitness", url: "https://members.crunch.com/", steps: ["Log into your Crunch Member Portal at members.crunch.com.", "Go to 'My Account' > 'Membership Info' and click 'Cancel Membership' (available in states with online cancellation mandates).", "If the online button isn't shown for your local franchise, contact or visit your home club at least 10 to 30 days before your next billing date."] },
+            { id: "golds-gym", name: "Gold's Gym", category: "Gyms & Fitness", url: "https://www.goldsgym.com/login/", steps: ["Log into your Gold's Gym member account or ABC Fitness billing portal.", "Select 'Manage Membership' > 'Cancel Membership'.", "Confirm your cancellation and save your confirmation receipt number."] },
+            { id: "orangetheory", name: "Orangetheory Fitness", category: "Gyms & Fitness", url: "https://www.orangetheory.com/en-us/member-login", steps: ["Sign in to your account or open the online cancellation form on Orangetheory.com.", "Select 'Cancel Membership' and enter the email address and home studio linked to your account.", "Note: Orangetheory requires a 30-day cancellation notice, so one final billing cycle may occur after submission."] },
+            { id: "snap-fitness", name: "Snap Fitness", category: "Gyms & Fitness", url: "https://www.snapfitness.com/us/member-login", steps: ["Log into your Snap Fitness account portal.", "Check your home club contact details under 'My Membership'.", "Submit a written cancellation request via email or the club portal at least 30 days prior to your next billing date."] },
+
+            // Software & Security (16)
+            { id: "adobe", name: "Adobe Creative Cloud", category: "Software & Security", url: "https://account.adobe.com/plans", steps: ["Sign in at account.adobe.com/plans.", "Click 'Manage plan' next to the subscription you want to cancel.", "Click 'Cancel your plan', skip the discounted retention offers, and confirm cancellation. (Pro Tip: If hit with a 50% early termination fee, switch to a different plan first, then cancel that new plan within 14 days for a full refund with $0 fee)."] },
+            { id: "canva", name: "Canva Pro", category: "Software & Security", url: "https://www.canva.com/settings/billing-and-plans", steps: ["Log in and go directly to Settings > Billing & Plans.", "Next to your Canva Pro or Teams plan, click the three dots (•••) icon.", "Select 'Cancel Plan' and click through the confirmation prompts."] },
+            { id: "mcafee", name: "McAfee", category: "Software & Security", url: "https://myaccount.mcafee.com/SubManager", steps: ["Sign in to your McAfee My Account portal.", "Click the 'Subscriptions' tile.", "Find your active product, click 'Manage subscription', and select 'Turn off auto-renewal'."] },
+            { id: "norton", name: "Norton", category: "Software & Security", url: "https://my.norton.com/extspa/account/subscriptions", steps: ["Sign in to your Norton account and open the 'My Subscriptions' tab.", "Under your active plan, click 'Cancel Subscription Renewal' or 'Manage Renewal'.", "Select your reason and confirm that auto-renewal is toggled OFF."] },
+            { id: "microsoft-365", name: "Microsoft 365", category: "Software & Security", url: "https://account.microsoft.com/services", steps: ["Log in at account.microsoft.com/services with your Microsoft account.", "Locate your Microsoft 365 subscription and click 'Manage'.", "Select 'Cancel subscription' (or 'Turn off recurring billing') and confirm at the bottom of the next page."] },
+            { id: "dropbox", name: "Dropbox", category: "Software & Security", url: "https://www.dropbox.com/account/plan", steps: ["Sign in and go directly to dropbox.com/account/plan.", "Scroll to the very bottom of the page and click 'Cancel plan'.", "Select a cancellation reason and click 'Continue canceling' until you see the confirmation banner."] },
+            { id: "evernote", name: "Evernote", category: "Software & Security", url: "https://www.evernote.com/Billing.action", steps: ["Log into Evernote Web and open Account Settings > Billing.", "Scroll down and click 'Cancel your Evernote subscription'.", "Decline the discount prompt and click 'Downgrade to Free' to finalize."] },
+            { id: "linkedin-premium", name: "LinkedIn Premium", category: "Software & Security", url: "https://www.linkedin.com/mypreferences/d/manage-subscription", steps: ["Log into LinkedIn on a desktop or mobile web browser (cannot be canceled inside the iOS app if billed directly through LinkedIn).", "On the Manage Subscription page, click 'Cancel subscription'.", "Click 'Continue to cancel' past the retention summary screen."] },
+            { id: "grammarly", name: "Grammarly", category: "Software & Security", url: "https://account.grammarly.com/subscription", steps: ["Sign in to account.grammarly.com/subscription.", "Scroll to the bottom of the Subscription page and click 'Cancel Subscription'.", "Click past the feature reminder screen and select 'Yes, continue' to complete cancellation."] },
+            { id: "zoom", name: "Zoom", category: "Software & Security", url: "https://zoom.us/billing", steps: ["Sign in to the Zoom web portal and open Plans and Billing > Plan Management.", "Click 'Manage' next to the plan you wish to cancel, then click 'Cancel Plan'.", "Click 'Confirm Cancellation' in the popup window."] },
+            { id: "squarespace", name: "Squarespace", category: "Software & Security", url: "https://account.squarespace.com/subscriptions", steps: ["Log into your Squarespace Account Dashboard and click the 'Subscriptions' tab.", "Click on the website or domain subscription you want to cancel.", "Click 'Cancel Subscription' (or toggle off 'Auto-renew') and confirm."] },
+            { id: "wix", name: "Wix", category: "Software & Security", url: "https://manage.wix.com/account/subscriptions", steps: ["Sign in to your Wix account and go to 'Subscriptions' (Premium Subscriptions).", "Click the three dots (•••) icon next to the relevant plan.", "Select 'Cancel Plan', choose 'Cancel auto-renew', and click 'Submit'."] },
+            { id: "expressvpn", name: "ExpressVPN", category: "Software & Security", url: "https://www.expressvpn.com/subscriptions", steps: ["Sign in at expressvpn.com/subscriptions.", "Click 'Edit subscription settings' under your active plan.", "Click 'Turn Off Automatic Renewal' and follow the prompts until it confirms your subscription auto-renewal is off."] },
+            { id: "lastpass", name: "LastPass", category: "Software & Security", url: "https://lastpass.com/my.php", steps: ["Log into your LastPass Web Vault and click 'Account Settings' (or 'Account Benefits') in the bottom-left sidebar.", "Click 'Cancel Renewal' under your Premium or Families plan details.", "Confirm cancellation on the prompt screen."] },
+            { id: "nordvpn", name: "NordVPN", category: "Software & Security", url: "https://my.nordaccount.com/dashboard/nordvpn/", steps: ["Log into your Nord Account dashboard and open the 'Billing' tab on the left menu.", "Click the 'Subscriptions' sub-tab.", "Click 'Manage' next to Auto-renewal and select 'Cancel auto-renewal'."] },
+            { id: "chegg", name: "Chegg", category: "Software & Security", url: "https://www.chegg.com/my/account", steps: ["Sign in to chegg.com/my/account.", "Under the 'Orders' or 'Subscriptions' section, click 'Cancel subscription'.", "Skip the pause subscription offer and click 'Cancel subscription' to confirm."] },
+
+            // Meal Kits & Delivery (11)
+            { id: "hellofresh", name: "HelloFresh", category: "Meal Kits & Delivery", url: "https://www.hellofresh.com/account-settings/plan-settings", steps: ["Sign in to HelloFresh on a web browser and go to 'Account Settings' > 'Plan Settings'.", "Scroll to the bottom under 'Status' and click 'Cancel Plan'.", "Click past the free box/discount offers until you see 'Your account has been deactivated'."] },
+            { id: "blue-apron", name: "Blue Apron", category: "Meal Kits & Delivery", url: "https://www.blueapron.com/account", steps: ["Log into your Blue Apron account on a web browser and open 'Plan Settings'.", "Next to your active Meal Kit plan, click 'Edit' and then 'Cancel Subscription' at the bottom.", "Follow the confirmation steps to finalize."] },
+            { id: "factor", name: "Factor (Factor 75)", category: "Meal Kits & Delivery", url: "https://www.factor75.com/settings/plan", steps: ["Log into Factor75.com and click your profile name > 'Settings' > 'Plan Settings'.", "Scroll down to the 'Deactivate your plan' section and click 'Cancel Plan'.", "Decline the retention credit offer and confirm cancellation before the weekly Wednesday 11:59 PM CT cutoff."] },
+            { id: "everyplate", name: "EveryPlate", category: "Meal Kits & Delivery", url: "https://www.everyplate.com/account-settings/plan-settings", steps: ["Log into EveryPlate on the web and navigate to 'Settings' > 'Plan Settings'.", "Scroll down to the 'Status' section and click 'Deactivate your plan'.", "Click 'Cancel Plan anyway' on the retention prompts to complete."] },
+            { id: "home-chef", name: "Home Chef", category: "Meal Kits & Delivery", url: "https://www.homechef.com/account", steps: ["Sign in to HomeChef.com and click 'Account' > 'Account Settings'.", "Scroll to the bottom of the page and click 'Pause or cancel account'.", "Select 'Cancel Account', answer the brief survey question, and click 'Confirm Cancellation'."] },
+            { id: "green-chef", name: "Green Chef", category: "Meal Kits & Delivery", url: "https://www.greenchef.com/settings/plan", steps: ["Sign in to GreenChef.com and open 'Settings' > 'Plan Settings'.", "Scroll down to the 'Deactivate your plan' section and click 'Cancel Plan'.", "Follow the final confirmation screen until you receive a cancellation email."] },
+            { id: "sunbasket", name: "Sunbasket", category: "Meal Kits & Delivery", url: "https://sunbasket.com/account", steps: ["Log into Sunbasket.com and go to 'My Account' > 'Settings'.", "Scroll down and click 'Cancel Account'.", "Select a reason and click 'Cancel My Account' to confirm."] },
+            { id: "nutrisystem", name: "Nutrisystem", category: "Meal Kits & Delivery", url: "https://www.nutrisystem.com/jsps_hmr/myaccount/dashboard.jsp", steps: ["Log into your Nutrisystem My Account dashboard.", "Click 'My Profile & Settings' > 'Manage Auto-Delivery'.", "Click 'Cancel Auto-Delivery' (Note: Check if an early termination fee applies if you agreed to a multi-month discount commitment)."] },
+            { id: "uber-one", name: "Uber One", category: "Meal Kits & Delivery", url: "https://riders.uber.com/", steps: ["Open the Uber or Uber Eats app (or sign in at riders.uber.com) and tap 'Account' > 'Uber One'.", "Scroll down and tap 'Manage Membership'.", "Tap 'End Membership' and then 'End Uber One' to confirm. (If within 48 hours of renewal, use the in-app Support chat to request cancellation)."] },
+            { id: "doordash-dashpass", name: "DoorDash DashPass", category: "Meal Kits & Delivery", url: "https://www.doordash.com/consumer/manage_dashpass/", steps: ["Log into DoorDash and go directly to Account > Manage DashPass.", "Click 'End Subscription'.", "Confirm your choice on the next screen so auto-renewal is disabled."] },
+            { id: "grubhub-plus", name: "Grubhub+", category: "Meal Kits & Delivery", url: "https://www.grubhub.com/account/grubhub-plus", steps: ["Sign in to Grubhub and navigate to 'Account' > 'Grubhub+ membership'.", "Click 'Manage your membership' or 'Cancel Grubhub+ membership'.", "Select your reason and confirm cancellation."] },
+
+            // Entertainment & Streaming (13)
+            { id: "netflix", name: "Netflix", category: "Entertainment & Streaming", url: "https://www.netflix.com/cancelplan", steps: ["Click the official portal button above (netflix.com/cancelplan) and sign in if prompted.", "It drops you directly on the 'Finish Cancellation' screen.", "Click the 'Finish Cancellation' button—done in one click!"] },
+            { id: "hulu", name: "Hulu", category: "Entertainment & Streaming", url: "https://secure.hulu.com/account", steps: ["Sign in to your Hulu Account page on a web browser.", "Scroll down to the 'Your Subscription' section and click 'Cancel'.", "Click 'Continue to Cancel' past the pause/discount offer and select 'Cancel Subscription'."] },
+            { id: "max", name: "Max (HBO)", category: "Entertainment & Streaming", url: "https://auth.max.com/subscription", steps: ["Sign in to Max.com and open your Subscription settings.", "Click 'Cancel Your Subscription' (if billed directly through Max; if billed via Apple, Amazon, or Roku, it will display that provider).", "Confirm cancellation to stop auto-renewal."] },
+            { id: "disney-plus", name: "Disney+", category: "Entertainment & Streaming", url: "https://www.disneyplus.com/account/subscription", steps: ["Log into DisneyPlus.com on a web or mobile browser.", "Under the 'Subscription' section, click your active Disney+ or Bundle plan.", "Click 'Cancel Subscription' and then 'No Thanks, Cancel Disney+'."] },
+            { id: "paramount-plus", name: "Paramount+ (with Showtime)", category: "Entertainment & Streaming", url: "https://www.paramountplus.com/account/", steps: ["Sign in to paramountplus.com/account on a web browser.", "Scroll to the 'Subscription & Billing' section and click 'Cancel Subscription'.", "Skip the free month or discount offer and click 'Yes, Cancel' at the bottom."] },
+            { id: "peacock", name: "Peacock", category: "Entertainment & Streaming", url: "https://www.peacocktv.com/account/plans", steps: ["Log into peacocktv.com/account and ensure you are on the 'Plans & Payment' tab.", "Click 'Change or Cancel Plan'.", "Click 'Cancel Plan' and confirm in the pop-up window."] },
+            { id: "apple-tv-plus", name: "Apple TV+", category: "Entertainment & Streaming", url: "https://tv.apple.com/settings", steps: ["Sign in to tv.apple.com/settings (or open Settings > Apple ID > Subscriptions on your iPhone/Mac).", "Scroll down to the 'Subscriptions' section and click 'Manage' next to Apple TV+.", "Click 'Cancel Subscription' and confirm."] },
+            { id: "amazon-prime", name: "Amazon Prime", category: "Entertainment & Streaming", url: "https://www.amazon.com/mc/pipelines/cancellation", steps: ["Sign in to Amazon's Prime Central cancellation page.", "Click 'Update, cancel and more' under Prime Membership, then select 'End Membership'.", "Click through the 3 yellow 'Continue to cancel' retention screens until you click 'End on [Date]' or 'End Now'."] },
+            { id: "sling-tv", name: "Sling TV", category: "Entertainment & Streaming", url: "https://www.sling.com/my-account", steps: ["Sign in to your Sling TV My Account dashboard.", "Click 'Cancel Subscription'.", "Verify your password if prompted and click 'Cancel Subscription' to finalize."] },
+            { id: "fubotv", name: "FuboTV", category: "Entertainment & Streaming", url: "https://www.fubo.tv/account/subscription", steps: ["Log in at fubo.tv/account/subscription.", "Click 'Cancel Subscription' at the bottom of your plan details.", "Ignore the pause membership prompt and click 'Complete Cancellation'."] },
+            { id: "crunchyroll", name: "Crunchyroll", category: "Entertainment & Streaming", url: "https://www.crunchyroll.com/account/membership", steps: ["Sign in and go directly to Membership Info on Crunchyroll.com.", "Click 'Cancel Subscription' (or 'Cancel Free Trial').", "Confirm cancellation on the following screen."] },
+            { id: "starz", name: "Starz", category: "Entertainment & Streaming", url: "https://www.starz.com/us/en/settings/billing", steps: ["Log into Starz.com on a web browser and open Settings > Billing & Plan.", "Click 'Cancel Subscription'.", "Decline the special retention rate and click 'Cancel Anyway' to finish."] },
+            { id: "amc-plus", name: "AMC+", category: "Entertainment & Streaming", url: "https://www.amcplus.com/account", steps: ["Log in at amcplus.com/account.", "Under the 'Subscription' section, click 'Cancel Membership'.", "Click 'Confirm' to stop future billing."] },
+
+            // Audio & Reading (10)
+            { id: "nytimes", name: "The New York Times", category: "Audio & Reading", url: "https://myaccount.nytimes.com/seg/subscription", steps: ["Sign in to your NYTimes Account Subscription page.", "Click 'Cancel your subscription' under Billing Details.", "Decline the $1/week promotional retention offer and click 'Continue to cancel' to finish online without chatting."] },
+            { id: "wsj", name: "Wall Street Journal", category: "Audio & Reading", url: "https://customercenter.wsj.com/subscriptions", steps: ["Log into the WSJ Customer Center.", "Under 'Manage Subscription', click 'Cancel Subscription'.", "Follow the online cancellation steps to confirm immediately."] },
+            { id: "washington-post", name: "The Washington Post", category: "Audio & Reading", url: "https://myaccount.washingtonpost.com/solo/subscriptions", steps: ["Log into your Washington Post account subscriptions page.", "Click 'Manage' next to your active subscription, then select 'Cancel Subscription'.", "Confirm cancellation on the final prompt."] },
+            { id: "economist", name: "The Economist", category: "Audio & Reading", url: "https://myaccount.economist.com/s/manage-my-subscription", steps: ["Sign in to your Economist account dashboard.", "Click 'Manage my subscription' and select 'Cancel subscription'.", "Complete the confirmation prompt to turn off auto-renewal."] },
+            { id: "medium", name: "Medium", category: "Audio & Reading", url: "https://medium.com/me/settings/membership", steps: ["Log into Medium and go to Settings > Membership and payment.", "Click 'Cancel membership'.", "Confirm your cancellation on the next screen."] },
+            { id: "audible", name: "Audible", category: "Audio & Reading", url: "https://www.audible.com/account/overview", steps: ["IMPORTANT TRAP: Spend any remaining Audible credits BEFORE canceling, or you will lose them immediately upon cancellation!", "Sign in to audible.com/account/overview on a desktop or mobile browser.", "Click 'Cancel membership' under your plan details and click 'No thanks, continue canceling' through the retention screens."] },
+            { id: "siriusxm", name: "SiriusXM", category: "Audio & Reading", url: "https://care.siriusxm.com/", steps: ["Log into your SiriusXM Online Account Center at care.siriusxm.com.", "Under your subscription, click 'Manage or Cancel Service'.", "Click 'Cancel Service' (or if routed to chat, type 'Cancel directly without retention offer' to finish quickly)."] },
+            { id: "spotify", name: "Spotify Premium", category: "Audio & Reading", url: "https://www.spotify.com/account/overview/", steps: ["Sign in to spotify.com/account on a web browser (cannot be canceled inside the Spotify mobile app).", "Under 'Your plan', click 'Cancel plan' or 'Change plan'.", "Scroll to Spotify Free and click 'Cancel Premium', then click 'Yes, cancel'."] },
+            { id: "apple-music", name: "Apple Music", category: "Audio & Reading", url: "https://music.apple.com/account/settings", steps: ["Sign in to music.apple.com and open Account Settings (or go to Settings > Apple ID > Subscriptions on iPhone/Mac).", "Scroll down to 'Subscriptions' and click 'Manage' next to Apple Music.", "Click 'Cancel Subscription' and confirm."] },
+            { id: "pandora", name: "Pandora", category: "Audio & Reading", url: "https://www.pandora.com/settings/subscription", steps: ["Sign in to pandora.com/settings/subscription on a browser.", "Click 'Switch Plans' and then click 'Cancel Subscription' at the bottom of the window.", "Enter your Pandora password to confirm."] },
+
+            // Dating Apps (8)
+            { id: "tinder", name: "Tinder", category: "Dating Apps", url: "https://tinder.com/app/settings", steps: ["IMPORTANT: Deleting the Tinder app or deleting your profile does NOT cancel your subscription!", "If subscribed on Web/Credit Card: Log in at tinder.com/app/settings, scroll to 'Manage Payment Account', and click 'Cancel Subscription'.", "If subscribed via iPhone or Android App Store: Open iOS Settings > Subscriptions (iPhone) or Google Play Store > Subscriptions (Android) and cancel Tinder there."] },
+            { id: "bumble", name: "Bumble", category: "Dating Apps", url: "https://bumble.com/app", steps: ["If subscribed via Web/Credit Card: Sign in at bumble.com/app, click your profile icon in the top left > 'Manage your Boost/Premium' > 'Cancel Subscription'.", "If subscribed on iPhone: Go to iOS Settings > [Your Name] > Subscriptions > Bumble > Cancel Subscription.", "If subscribed on Android: Open Google Play Store > Profile icon > Payments & subscriptions > Subscriptions > Bumble > Cancel."] },
+            { id: "hinge", name: "Hinge", category: "Dating Apps", url: "https://hinge.co/", steps: ["Hinge+ and HingeX subscriptions are billed through your mobile device's app store (deleting your Hinge account does not stop billing).", "On iPhone: Open iOS Settings > tap your Apple ID name > tap 'Subscriptions' > select 'Hinge' > tap 'Cancel Subscription'.", "On Android: Open the Google Play Store app > tap your profile icon > 'Payments & subscriptions' > 'Subscriptions' > select 'Hinge' > tap 'Cancel subscription'."] },
+            { id: "match", name: "Match.com", category: "Dating Apps", url: "https://www.match.com/account/settings", steps: ["Log into Match.com on a desktop or mobile web browser.", "Click the gear icon (Account Settings) and select 'Manage subscription'.", "Enter your password, click 'Cancel Subscription', and complete the exit prompt."] },
+            { id: "eharmony", name: "eHarmony", category: "Dating Apps", url: "https://www.eharmony.com/login/", steps: ["Log into your eHarmony account on a web browser.", "Click your profile photo in the top right and select 'Data & Settings'.", "Scroll to 'Amend Subscription' and click to turn off auto-renewal. (Note: Check if you signed up for a 6 or 12-month installment contract)."] },
+            { id: "okcupid", name: "OKCupid", category: "Dating Apps", url: "https://www.okcupid.com/settings/billing", steps: ["Sign in to okcupid.com/settings/billing on a web browser.", "Click 'Subscriptions' and toggle off auto-renewal / click 'Cancel Subscription'.", "If billed through Apple or Google Play, cancel inside your device's Subscriptions menu."] },
+            { id: "pof", name: "Plenty of Fish (POF)", category: "Dating Apps", url: "https://www.pof.com/manageaccount", steps: ["Sign in to pof.com/manageaccount on a browser.", "Click 'Subscription Status' or 'Membership' and select 'Cancel Subscription'.", "If purchased inside the mobile app, cancel via your iPhone Apple ID Subscriptions or Google Play Subscriptions."] },
+            { id: "grindr", name: "Grindr (XTRA / Unlimited)", category: "Dating Apps", url: "https://help.grindr.com/hc/en-us/articles/1500008657521-How-to-cancel-your-subscription", steps: ["Grindr XTRA and Unlimited are billed through your phone's app store or web checkout.", "On iPhone: Open iOS Settings > tap your name > Subscriptions > Grindr > Cancel Subscription.", "On Android: Open Google Play Store > tap profile icon > Payments & subscriptions > Subscriptions > Grindr > Cancel."] },
+
+            // Subscription Boxes (6)
+            { id: "fabfitfun", name: "FabFitFun", category: "Subscription Boxes", url: "https://fabfitfun.com/my-account/", steps: ["Sign in to fabfitfun.com/my-account.", "Scroll down to 'Account Subscription' and click 'Edit Account'.", "Click 'Cancel Membership', skip the credit/discount retention offer, and click 'Finalize Cancellation'."] },
+            { id: "barkbox", name: "BarkBox", category: "Subscription Boxes", url: "https://www.barkbox.com/account", steps: ["Log into barkbox.com/account.", "Click 'Subscriptions' and select your active BarkBox or Super Chewer plan.", "Click 'Disable auto-renewal' at the bottom of the page and confirm."] },
+            { id: "ipsy", name: "Ipsy", category: "Subscription Boxes", url: "https://www.ipsy.com/account", steps: ["Log into ipsy.com/account and select your membership tier (Glam Bag, BoxyCharm, or Icon Box).", "Scroll down and click 'Cancel Membership'.", "CRUCIAL TRAP: Click 'Continue Cancellation' through the survey prompts, then immediately check your email inbox and click the confirmation link inside the email Ipsy sends you! (If you don't click the email link, your cancellation will NOT go through)."] },
+            { id: "dollar-shave-club", name: "Dollar Shave Club", category: "Subscription Boxes", url: "https://us.dollarshaveclub.com/account", steps: ["Sign in to your Dollar Shave Club account.", "Go to 'Membership' or 'Subscription Settings'.", "Scroll to the bottom, click 'Cancel Membership', and confirm."] },
+            { id: "harrys", name: "Harry's", category: "Subscription Boxes", url: "https://www.harrys.com/en/us/profile/details", steps: ["Sign in to harrys.com and go to your Profile page.", "Under the 'Your Shave Plan' section, click 'Cancel plan'.", "Confirm your cancellation in the prompt window."] },
+            { id: "stitch-fix", name: "Stitch Fix", category: "Subscription Boxes", url: "https://www.stitchfix.com/settings", steps: ["Log into stitchfix.com/settings.", "Click 'Manage automatic Fixes'.", "Select 'Stop automatic Fixes' (you only pay a styling fee when a Fix is scheduled, so stopping automatic Fixes stops all future charges)."] }
+        ];
+
+        // ================= STATE & DOM ELEMENTS =================
+        let activeCategory = "All";
+        let currentService = null;
+        let globalCountsCache = {};
+
+        const homeView = document.getElementById('homeView');
+        const detailView = document.getElementById('detailView');
+        const adminView = document.getElementById('adminView');
+        const grid = document.getElementById('companyGrid');
+        const searchInput = document.getElementById('searchInput');
+        const noResults = document.getElementById('noResults');
+        const categoryFilters = document.getElementById('categoryFilters');
+        const serviceCountBadge = document.getElementById('serviceCountBadge');
+
+        // ================= ANALYTICS & COUNTER STORAGE =================
+        function getLocalCounts() {
+            try {
+                return JSON.parse(localStorage.getItem('cancellinks_local_counts') || '{}');
+            } catch (e) {
+                return {};
+            }
+        }
+
+        function incrementCounter(serviceId) {
+            // 1. Increment Local Storage Counter immediately
+            const counts = getLocalCounts();
+            counts[serviceId] = (counts[serviceId] || 0) + 1;
+            localStorage.setItem('cancellinks_local_counts', JSON.stringify(counts));
+
+            // 2. Increment Global Cloud Counter (CounterAPI) asynchronously
+            fetch(`https://api.counterapi.dev/v1/${COUNTER_NAMESPACE}/${serviceId}/up`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data && typeof data.count === 'number') {
+                        globalCountsCache[serviceId] = data.count;
+                    }
+                })
+                .catch(() => {});
+        }
+
+        function trackExternalClick() {
+            if (!currentService) return;
+            fetch(`https://api.counterapi.dev/v1/${COUNTER_NAMESPACE}/${currentService.id}-out/up`).catch(() => {});
+        }
+
+        // ================= CATEGORY & DIRECTORY RENDERING =================
+        function renderCategories() {
+            const categories = ["All", ...new Set(companies.map(c => c.category))];
+            categoryFilters.innerHTML = '';
+            categories.forEach(cat => {
+                const btn = document.createElement('button');
+                const isActive = cat === activeCategory;
+                btn.className = isActive
+                    ? 'bg-neonRed text-white px-4 py-2 rounded-xl text-xs font-bold shadow-md shadow-neonRed/20 transition-all'
+                    : 'bg-cardBg hover:bg-cardHover text-gray-300 border border-gray-800 px-4 py-2 rounded-xl text-xs font-semibold transition-all';
+                btn.textContent = cat;
+                btn.onclick = () => {
+                    activeCategory = cat;
+                    renderCategories();
+                    filterDirectory();
+                };
+                categoryFilters.appendChild(btn);
+            });
+        }
+
+        function filterDirectory() {
+            const query = searchInput.value.toLowerCase().trim();
+            const filtered = companies.filter(c => {
+                const matchesCat = activeCategory === "All" || c.category === activeCategory;
+                const matchesQuery = c.name.toLowerCase().includes(query) || c.category.toLowerCase().includes(query);
+                return matchesCat && matchesQuery;
+            });
+            serviceCountBadge.textContent = `${filtered.length} Guides`;
+            renderCards(filtered);
+        }
+
+        function renderCards(items) {
+            grid.innerHTML = '';
+            if (items.length === 0) {
+                noResults.classList.remove('hidden');
+                return;
+            }
+            noResults.classList.add('hidden');
+
+            items.forEach(company => {
+                const card = document.createElement('div');
+                card.className = 'bg-cardBg border border-gray-800/80 hover:border-gray-700 rounded-2xl p-5 flex items-center justify-between gap-4 transition-all shadow-lg group';
+
+                const leftDiv = document.createElement('div');
+                leftDiv.className = 'flex items-center space-x-4 min-w-0';
+
+                const avatar = document.createElement('div');
+                avatar.className = 'w-10 h-10 rounded-xl bg-gray-800/80 border border-gray-700/60 flex items-center justify-center text-gray-300 font-bold text-sm group-hover:border-neonRed/40 transition-colors shrink-0';
+                avatar.textContent = company.name.charAt(0);
+
+                const textDiv = document.createElement('div');
+                textDiv.className = 'min-w-0';
+
+                const title = document.createElement('h3');
+                title.className = 'font-semibold text-white text-base truncate';
+                title.textContent = company.name;
+
+                const sub = document.createElement('p');
+                sub.className = 'text-xs text-gray-400 truncate';
+                sub.textContent = company.category;
+
+                textDiv.appendChild(title);
+                textDiv.appendChild(sub);
+                leftDiv.appendChild(avatar);
+                leftDiv.appendChild(textDiv);
+
+                const btn = document.createElement('button');
+                btn.className = 'bg-neonRed hover:bg-neonRedHover text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-all shadow-md shadow-neonRed/20 shrink-0 w-[140px] text-center';
+                btn.textContent = 'How to Cancel';
+                btn.addEventListener('click', () => openServiceDetail(company.id));
+
+                card.appendChild(leftDiv);
+                card.appendChild(btn);
+                grid.appendChild(card);
+            });
+        }
+
+        // ================= DEDICATED INSTRUCTION PAGE VIEW =================
+        function openServiceDetail(serviceId, pushHash = true) {
+            const service = companies.find(c => c.id === serviceId);
+            if (!service) return;
+
+            currentService = service;
+            incrementCounter(service.id);
+
+            document.getElementById('detailInitial').textContent = service.name.charAt(0);
+            document.getElementById('detailCategory').textContent = service.category;
+            document.getElementById('detailTitle').textContent = service.name;
+            document.getElementById('detailExternalBtn').href = service.url;
+            document.getElementById('detailBtnText').textContent = `Open ${service.name} Website`;
+
+            const stepsList = document.getElementById('detailStepsList');
+            stepsList.innerHTML = '';
+
+            service.steps.forEach((stepText, idx) => {
+                const stepItem = document.createElement('div');
+                stepItem.className = 'bg-darkBg/90 border border-gray-800 rounded-2xl p-4 sm:p-5 flex items-start space-x-4';
+                stepItem.innerHTML = `
+                    <div class="w-8 h-8 rounded-xl bg-neonRed text-white font-extrabold text-sm flex items-center justify-center shrink-0 mt-0.5 shadow-md shadow-neonRed/20">
+                        ${idx + 1}
+                    </div>
+                    <p class="text-gray-200 text-sm sm:text-base leading-relaxed"></p>
+                `;
+                stepItem.querySelector('p').textContent = stepText;
+                stepsList.appendChild(stepItem);
+            });
+
+            homeView.classList.add('hidden');
+            adminView.classList.add('hidden');
+            detailView.classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            if (pushHash) {
+                history.pushState({ view: 'detail', id: service.id }, '', `#service=${service.id}`);
+            }
+        }
+
+        function showHomeView(pushHash = true) {
+            detailView.classList.add('hidden');
+            adminView.classList.add('hidden');
+            homeView.classList.remove('hidden');
+            currentService = null;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            if (pushHash && (window.location.hash || window.location.search.includes('admin=true'))) {
+                history.pushState({ view: 'home' }, '', window.location.pathname);
+            }
+        }
+
+        // ================= ADMIN ANALYTICS MONITOR =================
+        function promptAdminAccess() {
+            const pin = prompt("Enter Admin PIN to view visit analytics:");
+            if (pin === ADMIN_PIN) {
+                openAdminView();
+            } else if (pin !== null) {
+                alert("Incorrect PIN.");
+            }
+        }
+
+        function openAdminView() {
+            homeView.classList.add('hidden');
+            detailView.classList.add('hidden');
+            adminView.classList.remove('hidden');
+            document.getElementById('adminTotalServices').textContent = companies.length;
+            refreshAdminCounts();
+        }
+
+        async function refreshAdminCounts() {
+            const tbody = document.getElementById('adminTableBody');
+            const localCounts = getLocalCounts();
+            let totalLocal = 0;
+            Object.values(localCounts).forEach(v => totalLocal += v);
+            document.getElementById('adminTotalLocal').textContent = totalLocal;
+            document.getElementById('adminTotalGlobal').textContent = 'Syncing...';
+
+            // Fetch global counts in parallel with graceful fallback
+            await Promise.all(companies.map(async (c) => {
+                try {
+                    const res = await fetch(`https://api.counterapi.dev/v1/${COUNTER_NAMESPACE}/${c.id}`);
+                    if (res.ok) {
+                        const data = await res.json();
+                        globalCountsCache[c.id] = data.count || 0;
+                    } else {
+                        globalCountsCache[c.id] = globalCountsCache[c.id] || 0;
+                    }
+                } catch (e) {
+                    globalCountsCache[c.id] = globalCountsCache[c.id] || 0;
+                }
+            }));
+
+            let totalGlobal = 0;
+            Object.values(globalCountsCache).forEach(v => totalGlobal += v);
+            document.getElementById('adminTotalGlobal').textContent = totalGlobal;
+
+            const sorted = [...companies].sort((a, b) => {
+                const gDiff = (globalCountsCache[b.id] || 0) - (globalCountsCache[a.id] || 0);
+                if (gDiff !== 0) return gDiff;
+                return (localCounts[b.id] || 0) - (localCounts[a.id] || 0);
+            });
+
+            tbody.innerHTML = '';
+            sorted.forEach((company, idx) => {
+                const gCount = globalCountsCache[company.id] || 0;
+                const lCount = localCounts[company.id] || 0;
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-darkBg/40 transition-colors';
+                tr.innerHTML = `
+                    <td class="py-3 px-4 text-gray-500 font-bold">#${idx + 1}</td>
+                    <td class="py-3 px-4 font-semibold text-white">${company.name}</td>
+                    <td class="py-3 px-4 text-xs text-gray-400">${company.category}</td>
+                    <td class="py-3 px-4 text-right font-bold text-neonRed">${gCount}</td>
+                    <td class="py-3 px-4 text-right font-semibold text-gray-300">${lCount}</td>
+                    <td class="py-3 px-4 text-right">
+                        <button class="text-xs text-gray-400 hover:text-white underline">View Guide</button>
+                    </td>
+                `;
+                tr.querySelector('button').onclick = () => openServiceDetail(company.id);
+                tbody.appendChild(tr);
+            });
+        }
+
+        // ================= ISSUE REPORTING MODAL =================
+        function openIssueModal(serviceName) {
+            document.getElementById('issueServiceInput').value = serviceName || '';
+            document.getElementById('issueNotesInput').value = '';
+            document.getElementById('issueModal').classList.remove('hidden');
+        }
+
+        function closeIssueModal() {
+            document.getElementById('issueModal').classList.add('hidden');
+        }
+
+        async function submitIssueForm(e) {
+            e.preventDefault();
+            const service = document.getElementById('issueServiceInput').value;
+            const type = document.getElementById('issueTypeInput').value;
+            const notes = document.getElementById('issueNotesInput').value;
+
+            if (FORMSPREE_ENDPOINT) {
+                try {
+                    await fetch(FORMSPREE_ENDPOINT, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ service, type, notes })
+                    });
+                    alert('Thank you! Your report has been sent.');
+                    closeIssueModal();
+                    return;
+                } catch (err) {}
+            }
+
+            // Fallback: Instant pre-filled email report
+            const subject = encodeURIComponent(`[CancelLinks Report] ${type}: ${service}`);
+            const body = encodeURIComponent(`Service: ${service}\nIssue Type: ${type}\nDetails: ${notes}\n\nSubmitted from CancelLinks.com`);
+            window.location.href = `mailto:${OWNER_EMAIL}?subject=${subject}&body=${body}`;
+            closeIssueModal();
+        }
+
+        // ================= ROUTING & INITIALIZATION =================
+        searchInput.addEventListener('input', filterDirectory);
+
+        window.addEventListener('popstate', () => {
+            handleUrlState();
+        });
+
+        function handleUrlState() {
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('admin') === 'true') {
+                openAdminView();
+                return;
+            }
+            const hash = window.location.hash;
+            if (hash.startsWith('#service=')) {
+                const id = hash.replace('#service=', '');
+                openServiceDetail(id, false);
+            } else {
+                showHomeView(false);
+            }
+        }
+
+        // Initial Boot
+        renderCategories();
+        filterDirectory();
+        handleUrlState();
+    </script>
+</body>
+</html>
